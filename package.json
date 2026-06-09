@@ -1,0 +1,19 @@
+{
+  "name": "auto-marketer",
+  "version": "1.0.0",
+  "description": "An automated AI marketing pipeline to scrape websites, synthesize captions, and generate graphics.",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "cli": "node cli.js"
+  },
+  "dependencies": {
+    "axios": "^1.7.2",
+    "cheerio": "^1.0.0-rc.12",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  },
+  "author": "Antigravity",
+  "license": "MIT"
+}

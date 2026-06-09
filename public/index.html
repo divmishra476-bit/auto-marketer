@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auto-Marketer: AI Orchestration Pipeline</title>
+  <!-- Google Fonts: Inter and Outfit -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Stylesheet -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="app-container">
+    <!-- Sidebar History -->
+    <aside id="history-sidebar" class="glass-card">
+      <div class="sidebar-header">
+        <h2>Campaign History</h2>
+        <span class="badge" id="history-count">0</span>
+      </div>
+      <div id="history-list" class="scrollable">
+        <div class="empty-state">No campaigns generated yet.</div>
+      </div>
+    </aside>
+
+    <!-- Main Content Panel -->
+    <main id="main-content">
+      <header id="dashboard-header">
+        <div class="logo-area">
+          <span class="logo-icon">🔥</span>
+          <div>
+            <h1>Auto-Marketer</h1>
+            <p class="subtitle">AI Orchestration Pipeline</p>
+          </div>
+        </div>
+        
+        <!-- Live / Mock Mode Toggles -->
+        <div class="header-controls">
+          <label class="toggle-switch">
+            <input type="checkbox" id="mock-toggle" checked>
+            <span class="slider"></span>
+          </label>
+          <span class="toggle-label" id="mock-status-text">Sandbox / Mock Mode</span>
+        </div>
+      </header>
+
+      <div class="dashboard-grid">
+        <!-- Input & Configuration Card -->
+        <section class="grid-card glass-card" id="config-panel">
+          <h2>1. Source & Configuration</h2>
+          <form id="pipeline-form">
+            <div class="form-group">
+              <label for="target-url">Target URL to Scrape</label>
+              <div class="input-with-button">
+                <input type="url" id="target-url" placeholder="https://example.com" required>
+                <button type="submit" id="btn-generate">Generate Campaign</button>
+              </div>
+            </div>
+          </form>
+
+          <details id="api-config-drawer">
+            <summary class="drawer-header">
+              <span>🔑 Configure API Keys</span>
+              <span class="drawer-arrow">▼</span>
+            </summary>
+            <div class="drawer-content">
+              <p class="info-text">Keys are saved locally in your browser (localStorage) and never sent to third-party tracking servers.</p>
+              
+              <fieldset>
+                <legend>Text Synthesis (LLM)</legend>
+                <div class="form-group">
+                  <label for="text-provider">Provider</label>
+                  <select id="text-provider">
+                    <option value="groq" selected>Groq (Llama-3.3 - Fast & Free tier)</option>
+                    <option value="gemini">Gemini (1.5 Flash - Rich Context)</option>
+                    <option value="openai">OpenAI (GPT-4o-mini)</option>
+                  </select>
+                </div>
+                <div class="form-group password-group">
+                  <label for="text-key">API Key</label>
+                  <input type="password" id="text-key" placeholder="Enter text provider API key">
+                  <span class="toggle-password" data-target="text-key">👁</span>
+                </div>
+              </fieldset>
+
+              <fieldset>
+                <legend>Graphic Generation (Vision)</legend>
+                <div class="form-group">
+                  <label for="image-provider">Provider</label>
+                  <select id="image-provider">
+                    <option value="huggingface" selected>Hugging Face (FLUX - Free Inference API)</option>
+                    <option value="fal">Fal.ai (Flux Schnell - Fast Queue)</option>
+                    <option value="openai">OpenAI (DALL-E 3)</option>
+                  </select>
+                </div>
+                <div class="form-group password-group">
+                  <label for="image-key">API Key / Token</label>
+                  <input type="password" id="image-key" placeholder="Enter image provider API key">
+                  <span class="toggle-password" data-target="image-key">👁</span>
+                </div>
+              </fieldset>
+            </div>
+          </details>
+        </section>
+
+        <!-- Pipeline Progress Card -->
+        <section class="grid-card glass-card" id="pipeline-panel">
+          <h2>2. Pipeline Execution</h2>
+          
+          <div id="pipeline-steps">
+            <div class="pipeline-step" id="step-scrape">
+              <div class="step-icon">🌐</div>
+              <div class="step-details">
+                <h3>Scrape URL</h3>
+                <p>Extracting raw web page text</p>
+              </div>
+              <div class="step-status">Pending</div>
+            </div>
+            <div class="pipeline-step" id="step-synthesis">
+              <div class="step-icon">✍</div>
+              <div class="step-details">
+                <h3>Synthesis</h3>
+                <p>Generating 2-sentence marketing caption</p>
+              </div>
+              <div class="step-status">Pending</div>
+            </div>
+            <div class="pipeline-step" id="step-translate">
+              <div class="step-icon">🎨</div>
+              <div class="step-details">
+                <h3>Prompt Translation</h3>
+                <p>Analyzing tone & scripting image prompt</p>
+              </div>
+              <div class="step-status">Pending</div>
+            </div>
+            <div class="pipeline-step" id="step-vision">
+              <div class="step-icon">🖼</div>
+              <div class="step-details">
+                <h3>Vision</h3>
+                <p>Generating graphic asset & packaging output</p>
+              </div>
+              <div class="step-status">Pending</div>
+            </div>
+          </div>
+
+          <div id="logs-container">
+            <div class="logs-header">
+              <span>Pipeline Terminal Logs</span>
+              <button id="btn-clear-logs">Clear Logs</button>
+            </div>
+            <div id="logs-list" class="scrollable console">
+              <div class="log-entry system">Ready. Enter a URL and press Generate Campaign.</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Output Visualizer Card -->
+        <section class="grid-card glass-card" id="output-panel">
+          <h2>3. Generated Campaign Result</h2>
+          
+          <div id="output-loading" class="hidden">
+            <div class="loader-spinner"></div>
+            <p>Orchestrating AI models... Please wait.</p>
+          </div>
+
+          <div id="output-empty">
+            <div class="empty-state-graphic">💡</div>
+            <h3>No Active Campaign</h3>
+            <p>Generate a campaign or select an item from the history sidebar to display results.</p>
+          </div>
+
+          <div id="output-content" class="hidden">
+            <div class="result-header">
+              <div>
+                <h3 id="result-brand">Brand Name</h3>
+                <span class="badge" id="result-tone">Tone of voice</span>
+              </div>
+              <a href="#" id="result-download" class="btn-primary" download>Download Graphic</a>
+            </div>
+
+            <div class="result-body">
+              <div class="graphic-preview-container">
+                <img id="result-graphic" src="" alt="Marketing graphic">
+                <span class="file-type-badge" id="result-format-badge">PNG</span>
+              </div>
+              
+              <div class="campaign-details">
+                <div class="copy-box">
+                  <div class="copy-box-header">
+                    <span>Marketing Caption (Social Media Copy)</span>
+                    <button id="btn-copy-caption">Copy Text</button>
+                  </div>
+                  <blockquote id="result-caption">"A punchy 2-sentence social media caption will display right here."</blockquote>
+                </div>
+
+                <div class="metadata-meta">
+                  <h4>Generated Image Prompt</h4>
+                  <p id="result-prompt">Detailed prompt used for generation...</p>
+                </div>
+
+                <div class="metadata-meta">
+                  <h4>Keywords</h4>
+                  <div id="result-keywords" class="tags-container"></div>
+                </div>
+
+                <div class="local-path-info">
+                  <span>📂 Saved folder: </span>
+                  <code id="result-path-folder">outputs/campaign_id/</code>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
