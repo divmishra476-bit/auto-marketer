@@ -1,3 +1,29 @@
+/**
+ * ============================================================================
+ * 🚀 AUTO-MARKETER: AI ORCHESTRATION PIPELINE (CLI Entrypoint)
+ * ============================================================================
+ * 
+ * DESCRIPTION:
+ * This script automates marketing campaign generation from a single URL input.
+ * It chains multiple services: scraping content, synthesizing copy, 
+ * translating tone to image prompts, and rendering assets.
+ * 
+ * LOGICAL PIPELINE ARCHITECTURE:
+ * 1. Scrape: Extracts text with user-agent spoofing (Cheerio).
+ *    - Fallback 1: Extract title, description & OpenGraph metadata if blocked (403/401).
+ *    - Fallback 2: Domain-name analysis if standard extraction is empty.
+ * 2. Synthesis (LLM): Synthesizes brand tone, caption, and graphic prompt.
+ *    - Orchestrates Groq, Gemini, or OpenAI API based on env configuration.
+ *    - Fallback: Pre-mapped sandbox mock synthesizer if no keys are provided.
+ * 3. Image Generation: Creates ad graphics.
+ *    - Orchestrates Hugging Face Inference, Fal.ai, or OpenAI DALL-E.
+ *    - Fallback 1: Keyword-matching stock image lookup via Unsplash.
+ *      - Fix: Curated 16-theme tag matching with seed-hash rotation & sequential retry.
+ *    - Fallback 2: Emergency local SVG gradient canvas builder if offline.
+ * 4. Local Archiving: Saves outputs (caption, prompt, graphic, JSON meta) in outputs/.
+ * ============================================================================
+ */
+
 import path from 'path';
 import fs from 'fs';
 import { fileURLToPath } from 'url';

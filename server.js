@@ -1,3 +1,21 @@
+/**
+ * ============================================================================
+ * 🚀 AUTO-MARKETER: AI ORCHESTRATION PIPELINE (Express Server Entrypoint)
+ * ============================================================================
+ * 
+ * DESCRIPTION:
+ * Express server exposing endpoints for running the Auto-Marketer pipeline,
+ * retrieving campaign history, and serving the interactive dashboard UI.
+ * 
+ * API ENDPOINTS:
+ * 1. POST /api/generate
+ *    - Triggers end-to-end scraper + LLM + image rendering pipeline.
+ *    - Saves generated files to outputs/ and logs telemetry.
+ * 2. GET /api/campaigns
+ *    - Reads local outputs/ subfolders to compile execution history.
+ * ============================================================================
+ */
+
 import express from 'express';
 import path from 'path';
 import fs from 'fs';
